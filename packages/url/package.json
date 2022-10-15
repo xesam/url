@@ -6,6 +6,9 @@
   "homepage": "https://github.com/xesam/url#readme",
   "license": "ISC",
   "main": "lib/url.js",
+  "scripts": {
+    "test": "jest"
+  },
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -19,9 +22,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xesam/url.git"
-  },
-  "scripts": {
-    "test": "node ./__tests__/@xesam/url.test.js"
   },
   "bugs": {
     "url": "https://github.com/xesam/url/issues"
