@@ -22,7 +22,7 @@
     "url": "git+https://github.com/xesam/url.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@xesam/url-object.test.js"
+    "test": "jest"
   },
   "dependencies": {
     "@xesam/url": "^0.1.0"
