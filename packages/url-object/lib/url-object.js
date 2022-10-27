@@ -1,4 +1,4 @@
-const CompatURL = require('./src/CompatURL');
+const CompatURL = require('./CompatURL');
 const _Native_URL = typeof URL === 'function' ? URL : (typeof webkitURL === "function" ? webkitURL : CompatURL);
 
 function parse(url, tryNative = false) {
