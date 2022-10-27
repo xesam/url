@@ -1,6 +1,6 @@
 {
   "name": "@xesam/url",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parse url string with RegExp",
   "author": "xesam <xesam@outlook.com>",
   "homepage": "https://github.com/xesam/url#readme",

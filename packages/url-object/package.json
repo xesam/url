@@ -1,6 +1,6 @@
 {
   "name": "@xesam/url-object",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple URL modifier",
   "author": "xesam <xesam@outlook.com>",
   "homepage": "https://github.com/xesam/url#readme",
@@ -25,7 +25,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@xesam/url": "^0.1.0"
+    "@xesam/url": "^0.1.1"
   },
   "bugs": {
     "url": "https://github.com/xesam/url/issues"
