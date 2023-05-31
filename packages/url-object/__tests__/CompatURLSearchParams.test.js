@@ -8,12 +8,12 @@ describe('CompatURLSearchParams', () => {
         theURLSearchParams = new URLSearchParams();
     });
 
-    test('when get non-exist name then return null', () => {
+    test('when get a non-exist name then return null', () => {
         expect(theCompatSearchParams.get('none')).toBeNull();
         expect(theCompatSearchParams.get('none')).toBe(theURLSearchParams.get('none'));
     });
 
-    test('when get name then return a value', () => {
+    test('when get then return the first value', () => {
         theCompatSearchParams.append('a', '1');
         theCompatSearchParams.append('a', '2');
         theURLSearchParams.append('a', '1');
@@ -22,7 +22,7 @@ describe('CompatURLSearchParams', () => {
         expect(theCompatSearchParams.get('a')).toEqual(theURLSearchParams.get('a'));
     });
 
-    test('when getAll name then return a list', () => {
+    test('when getAll then return a list', () => {
         theCompatSearchParams.append('a', '1');
         theCompatSearchParams.append('a', '2');
         theURLSearchParams.append('a', '1');
@@ -42,7 +42,7 @@ describe('CompatURLSearchParams', () => {
         expect(theCompatSearchParams.get('a')).toEqual(theURLSearchParams.get('a'));
     });
 
-    test('when check a exist name then return true', () => {
+    test('when the name exists then return true', () => {
         theCompatSearchParams.append('a', '1');
         theURLSearchParams.append('a', '1');
         expect(theCompatSearchParams.has('a')).toBeTruthy();
