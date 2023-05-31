@@ -1,8 +1,12 @@
 {
   "name": "@xesam/url",
   "version": "0.1.1",
-  "description": "Parse url string with RegExp",
+  "description": "使用 Javascript 正则解析 URL 字符串（Parse url string with RegExp）",
   "author": "xesam <xesam@outlook.com>",
+  "keywords": [
+    "url",
+    "parse url"
+  ],
   "homepage": "https://github.com/xesam/url#readme",
   "license": "ISC",
   "main": "lib/url.js",
