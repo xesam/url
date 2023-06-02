@@ -1,7 +1,7 @@
 class UrlQuery {
-    constructor(qstring, decode=false) {
+    constructor(qstring, decode = false) {
         this._components = Object.create(null);
-        if (arguments.length){
+        if (arguments.length) {
             this.merge(qstring, decode);
         }
     }
@@ -14,10 +14,11 @@ class UrlQuery {
         if (!this.has(key)) {
             return;
         }
-        if (this._components[key].length === 1) {
+        if (this._components[key].length > 1) {
+            return this._components[key];
+        } else {
             return this._components[key][0];
         }
-        return this._components[key];
     }
 
     add(key, value) {
@@ -53,15 +54,19 @@ class UrlQuery {
         return this;
     }
 
+    _parseString(newQuery, decode = false) {
+        const empty = new UrlQuery();
+        return newQuery.split('&')
+            .map(ele => ele.split('='))
+            .reduce((curr, [key, value]) => {
+                curr.add(key, decode ? decodeURIComponent(value) : value);
+                return curr;
+            }, empty);
+    }
+
     merge(newQuery, decode = false) {
         if (typeof newQuery === 'string') {
-            const empty = new UrlQuery();
-            const qObj = newQuery.split('&')
-                .map(ele => ele.split('='))
-                .reduce((curr, [key, value]) => {
-                    curr.add(key, decode ? decodeURIComponent(value) : value);
-                    return curr;
-                }, empty);
+            const qObj = this._parseString(newQuery, decode);
             this.merge(qObj);
         } else if (newQuery.constructor === UrlQuery) {
             Object.assign(this._components, newQuery._components);
