@@ -217,6 +217,27 @@ describe('UrlObject', () => {
         expect(testUrlObject.search()).toBeUndefined();
     });
 
+    test('when set query then update query and search', () => {
+        const testUrlObject = createTestUrlObject();
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+
+        testUrlObject.query.set('k1', 'new_v1');
+        testUrlObject.query.set('new_k2', 'v2');
+        expect(testUrlObject.search()).toContain('k1=new_v1');
+        expect(testUrlObject.search()).toContain('k2=v2');
+        expect(testUrlObject.search()).toContain('new_k2=v2');
+    });
+
+    test('when remove query then update query and search', () => {
+        const testUrlObject = createTestUrlObject();
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+
+        testUrlObject.query.remove('k1');
+        testUrlObject.query.remove('k2');
+
+        expect(testUrlObject.path()).toBe('/part1/part2');
+    });
+
     test('when set hash then update hash only', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.hash(' hash ');

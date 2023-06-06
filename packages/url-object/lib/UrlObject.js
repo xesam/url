@@ -1,10 +1,9 @@
+const UrlQuery = require('./UrlQuery');
+
 class UrlObject {
     constructor(href) {
         this._components = {};
-    }
-
-    _attr(name, value, defaultValue) {
-        return this;
+        this.query = new UrlQuery();
     }
 
     protocol(value) {
@@ -181,6 +180,29 @@ class UrlObject {
 
     search(value) {
         if (!arguments.length) {
+            if (!this.query) {
+                return;
+            } else if (!this.query.toString().length) {
+                return;
+            } else {
+                return '?' + this.query.toString();
+            }
+        }
+        if (!value) {
+            this.query = null;
+            return this;
+        }
+        value = String(value).trim();
+        if (value === '?') {
+            this.query = null;
+            return this;
+        }
+        this.query = new UrlQuery(value.substring(1));
+        return this;
+    }
+
+    searchOrigin(value) {
+        if (!arguments.length) {
             return this._components['search'];
         }
         if (!value) {
@@ -194,10 +216,6 @@ class UrlObject {
         }
         this._components['search'] = value;
         return this;
-    }
-
-    query(key, value) {
-
     }
 
     hash(value) {
