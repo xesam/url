@@ -11,12 +11,18 @@ describe('UrlObject', () => {
         expect(testUrlQuery.toString()).toBe('');
     });
 
-    test('when check a key with has then bool-existence is returned', () => {
+    test('when the key exit then true is returned', () => {
+        const testUrlQuery = createTestUrlQuery();
+        testUrlQuery.set("exist", 200);
+
+        expect(testUrlQuery.has("exist")).toBe(true);
+    });
+
+    test('when the key does not exit then false is returned', () => {
         const testUrlQuery = createTestUrlQuery();
         testUrlQuery.set("exist", 200);
 
         expect(testUrlQuery.has("none-exist")).toBe(false);
-        expect(testUrlQuery.has("exist")).toBe(true);
     });
 
     test('when get with a key then return the value of the key', () => {
@@ -165,7 +171,7 @@ describe('UrlObject', () => {
         expect(qstring).toContain('b=400%');
     });
 
-    test('when create with qstring then add the keys', () => {
+    test('when create with qstring then add the keys with origin value', () => {
         const testUrlQuery = new UrlQuery('a=500%25&b=400');
 
         expect(testUrlQuery.get("a")).toEqual('500%25');
