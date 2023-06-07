@@ -32,8 +32,14 @@ class UrlQuery {
         return this;
     }
 
-    set(key) {
-        this._components[key] = Array.prototype.slice.call(arguments, 1);
+    set(key, ...values) {
+        const validValues = values.filter(ele => !!ele);
+        if (!validValues.length) {
+            this._components[key] = [''];
+        } else {
+            this._components[key] = validValues;
+        }
+
         return this;
     }
 
