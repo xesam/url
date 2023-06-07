@@ -3,7 +3,7 @@ const UrlQuery = require('./UrlQuery');
 class UrlObject {
     constructor(href) {
         this._components = {};
-        this.query = new UrlQuery();
+        this.query = null;
     }
 
     protocol(value) {
@@ -82,8 +82,13 @@ class UrlObject {
                 } else {
                     return this.hostname();
                 }
+            } else {
+                if (this.port()) {
+                    return `:${this.port()}`
+                } else {
+                    return undefined;
+                }
             }
-            return undefined;
         }
         if (!value) {
             this.hostname(null);
