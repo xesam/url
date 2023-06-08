@@ -12,17 +12,19 @@ describe('UrlObject', () => {
     });
 
     test('when create with qstring then add the keys with origin value', () => {
-        const testUrlQuery = new UrlQuery('a=500%25&b=400');
+        const testUrlQuery = new UrlQuery('a=500%25&b=400&b=500');
 
         expect(testUrlQuery.get("a")).toEqual('500%25');
-        expect(testUrlQuery.get("b")).toEqual('400');
+        expect(testUrlQuery.get("b")).toContain('400');
+        expect(testUrlQuery.get("b")).toContain('500');
     });
 
     test('when create with qstring and decode is true then add the keys with decoded value', () => {
-        const testUrlQuery = new UrlQuery('a=500%25&b=400', true);
+        const testUrlQuery = new UrlQuery('a=500%25&b=400&b=500', true);
 
         expect(testUrlQuery.get("a")).toEqual('500%');
-        expect(testUrlQuery.get("b")).toEqual('400');
+        expect(testUrlQuery.get("b")).toContain('400');
+        expect(testUrlQuery.get("b")).toContain('500');
     });
 
     test('when the key exit then true is returned', () => {

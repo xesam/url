@@ -1,8 +1,8 @@
 class UrlQuery {
-    constructor(qstring, decode = false) {
+    constructor(qstring, decodeValue = false) {
         this._components = Object.create(null);
         if (arguments.length) {
-            this.merge(qstring, decode);
+            this.merge(qstring, decodeValue);
         }
     }
 
@@ -60,19 +60,19 @@ class UrlQuery {
         return this;
     }
 
-    _parseString(newQuery, decode = false) {
+    _parseString(newQuery, decodeValue = false) {
         const empty = new UrlQuery();
         return newQuery.split('&')
             .map(ele => ele.split('='))
             .reduce((curr, [key, value]) => {
-                curr.add(key, decode ? decodeURIComponent(value) : value);
+                curr.add(key, decodeValue ? decodeURIComponent(value) : value);
                 return curr;
             }, empty);
     }
 
-    merge(newQuery, decode = false) {
+    merge(newQuery, decodeValue = false) {
         if (typeof newQuery === 'string') {
-            const qObj = this._parseString(newQuery, decode);
+            const qObj = this._parseString(newQuery, decodeValue);
             this.merge(qObj);
         } else if (newQuery.constructor === UrlQuery) {
             Object.assign(this._components, newQuery._components);
@@ -80,10 +80,10 @@ class UrlQuery {
         return this;
     }
 
-    toString(decode = false) {
+    toString(decodeValue = false) {
         return Object.entries(this._components)
             .map(([key, values]) => {
-                return values.map(value => `${key}=${decode ? encodeURIComponent(value) : value}`).join('&')
+                return values.map(value => `${key}=${decodeValue ? encodeURIComponent(value) : value}`).join('&')
             })
             .join('&')
     }
