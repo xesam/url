@@ -7,6 +7,7 @@ describe('UrlObject', () => {
 
     test('when create a new UrlObject then all attributes are undefined', () => {
         const testUrlObject = createTestUrlObject();
+
         expect(testUrlObject.protocol()).toBeUndefined();
         expect(testUrlObject.auth()).toBeUndefined();
         expect(testUrlObject.username()).toBeUndefined();
@@ -18,6 +19,11 @@ describe('UrlObject', () => {
         expect(testUrlObject.pathname()).toBeUndefined();
         expect(testUrlObject.search()).toBeUndefined();
         expect(testUrlObject.hash()).toBeUndefined();
+    });
+
+    test('when create a new UrlObject then the query is null', () => {
+        const testUrlObject = createTestUrlObject();
+
         expect(testUrlObject.query).toBeNull();
     });
 

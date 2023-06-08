@@ -1,6 +1,6 @@
 const UrlQuery = require('../lib/UrlQuery');
 
-describe('UrlObject', () => {
+describe('UrlQuery', () => {
     function createTestUrlQuery() {
         return new UrlQuery();
     }
