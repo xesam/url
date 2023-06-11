@@ -1,7 +1,9 @@
+'use strict';
+
 const CompatURL = require('./CompatURL');
 const _Native_URL = typeof URL === 'function' ? URL : (typeof webkitURL === "function" ? webkitURL : CompatURL);
 
-function parse(url, tryNative = false) {
+function createURL(url, tryNative = false) {
     if (tryNative) {
         return new _Native_URL(url);
     } else {
@@ -9,4 +11,4 @@ function parse(url, tryNative = false) {
     }
 }
 
-module.exports = parse;
+module.exports = createURL;

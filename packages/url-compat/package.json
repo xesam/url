@@ -1,0 +1,32 @@
+{
+  "name": "@xesam/url-compat",
+  "version": "0.1.2",
+  "description": "URL and URLSearchParams Compat",
+  "keywords": [
+    "URL"
+  ],
+  "author": "xesam <xesam@outlook.com>",
+  "homepage": "https://github.com/xesam/url#readme",
+  "license": "ISC",
+  "main": "lib/url-compat.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "dependencies": {
+    "@xesam/url": "^0.1.2"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xesam/url.git"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "bugs": {
+    "url": "https://github.com/xesam/url/issues"
+  }
+}
