@@ -1,6 +1,6 @@
 {
   "name": "@xesam/url",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "使用 Javascript 正则解析 URL 字符串（Parse url string with RegExp）",
   "author": "xesam <xesam@outlook.com>",
   "keywords": [
