@@ -1,11 +1,11 @@
 const UrlObject = require('../lib/UrlObject');
 
 describe('UrlObject', () => {
-    function createTestUrlObject() {
-        return new UrlObject();
+    function createTestUrlObject(href) {
+        return new UrlObject(href);
     }
 
-    test('when create a new UrlObject then all attributes are undefined', () => {
+    test('when create a new UrlObject with nothing then all attributes are undefined', () => {
         const testUrlObject = createTestUrlObject();
 
         expect(testUrlObject.protocol()).toBeUndefined();
@@ -21,10 +21,34 @@ describe('UrlObject', () => {
         expect(testUrlObject.hash()).toBeUndefined();
     });
 
-    test('when create a new UrlObject then the query is null', () => {
+    test('when create a new UrlObject with nothing then the query is null', () => {
         const testUrlObject = createTestUrlObject();
 
         expect(testUrlObject.query).toBeNull();
+    });
+
+    test('when create a new UrlObject with url-string then all attributes are init', () => {
+        const testUrlObject = createTestUrlObject('the_protocol://the_username:the_password@the_hostname:8888/the_pathname?the_key=the_value#the_hash');
+
+        expect(testUrlObject.protocol()).toBe('the_protocol:');
+        expect(testUrlObject.auth()).toBe('the_username:the_password');
+        expect(testUrlObject.username()).toBe('the_username');
+        expect(testUrlObject.password()).toBe('the_password');
+        expect(testUrlObject.host()).toBe('the_hostname:8888');
+        expect(testUrlObject.hostname()).toBe('the_hostname');
+        expect(testUrlObject.port()).toBe('8888');
+        expect(testUrlObject.path()).toBe('/the_pathname?the_key=the_value');
+        expect(testUrlObject.pathname()).toBe('/the_pathname');
+        expect(testUrlObject.search()).toBe('?the_key=the_value');
+        expect(testUrlObject.hash()).toBe('#the_hash');
+    });
+
+    test('when create a new UrlObject with url-string then query is init', () => {
+        const testUrlObject = createTestUrlObject('the_protocol://the_username:the_password@the_hostname:8888/the_pathname?the_key=the_value#the_hash');
+
+        expect(testUrlObject.query.has('the_key')).toBeTruthy();
+        expect(testUrlObject.query.get('the_key')).toBe('the_value');
+        expect(testUrlObject.query.toString()).toContain('the_key=the_value');
     });
 
     test('when set protocol then update protocol only', () => {

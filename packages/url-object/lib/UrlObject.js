@@ -1,9 +1,19 @@
+const url = require('@xesam/url');
 const UrlQuery = require('./UrlQuery');
 
 class UrlObject {
     constructor(href) {
         this._components = {};
         this.query = null;
+        if (typeof href === 'string') {
+            const url_components = url(href);
+            this.protocol(url_components.protocol);
+            this.auth(url_components.auth);
+            this.host(url_components.host);
+            this.pathname(url_components.pathname);
+            this.search(url_components.search);
+            this.hash(url_components.hash);
+        }
     }
 
     protocol(value) {
@@ -240,10 +250,6 @@ class UrlObject {
             return this;
         }
         this._components['hash'] = value;
-        return this;
-    }
-
-    from(href) {
         return this;
     }
 
