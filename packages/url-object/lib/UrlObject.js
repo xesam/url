@@ -216,23 +216,6 @@ class UrlObject {
         return this;
     }
 
-    searchOrigin(value) {
-        if (!arguments.length) {
-            return this._components['search'];
-        }
-        if (!value) {
-            delete this._components['search'];
-            return this;
-        }
-        value = String(value).trim();
-        if (value === '?') {
-            delete this._components['search'];
-            return this;
-        }
-        this._components['search'] = value;
-        return this;
-    }
-
     hash(value) {
         if (!arguments.length) {
             return this._components['hash'];
@@ -255,10 +238,6 @@ class UrlObject {
 
     toString() {
         return `${this.protocol()}//${this.host()}${this.path()}${this.hash()}`;
-    }
-
-    toJSON() {
-        return {};
     }
 }
 
