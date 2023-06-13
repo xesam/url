@@ -4,19 +4,19 @@
 
 URL utils with pure Javascript.
 
-## URL 解析（@xesam/url）
+## URL 字符串解析（@xesam/url）
 
 Parse url string with RegExp.
 
 [@xesam/url](./packages/url/README.md)
 
-## URL 解析（@xesam/url-compat）
+## URL 兼容处理（@xesam/url-compat）
 
 A compat URL&URLSearchParams with pure Javascript.
 
 [@xesam/url-compat](./packages/url-compat/README.md)
 
-## url 修改（@xesam/url-object）
+## URL 对象方式修改（@xesam/url-object）
 
 A simple URL-style String modifier.
 
