@@ -60,7 +60,7 @@ class UrlQuery {
         return this;
     }
 
-    _parseString(newQuery, decodeValue = false) {
+    _loadFromQueryString(newQuery, decodeValue = false) {
         const empty = new UrlQuery();
         return newQuery.split('&')
             .map(ele => ele.split('='))
@@ -70,12 +70,12 @@ class UrlQuery {
             }, empty);
     }
 
-    merge(newQuery, decodeValue = false) {
-        if (typeof newQuery === 'string') {
-            const qObj = this._parseString(newQuery, decodeValue);
-            this.merge(qObj);
-        } else if (newQuery.constructor === UrlQuery) {
-            Object.assign(this._components, newQuery._components);
+    merge(otherQuery, decodeValue = false) {
+        if (typeof otherQuery === 'string') {
+            const newUrlQuery = this._loadFromQueryString(otherQuery, decodeValue);
+            this.merge(newUrlQuery);
+        } else if (otherQuery.constructor === UrlQuery) {
+            Object.assign(this._components, otherQuery._components);
         }
         return this;
     }
