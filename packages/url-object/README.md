@@ -9,7 +9,7 @@ npm install @xesam/url-object
 ```
 
 ```javascript
-const {UrlObject} = require('@xesam/url-object/lib');
+const {UrlObject} = require('@xesam/url-object');
 const urlObject = new UrlObject('https://admin:root@ahost:443/apath?k=v');
 
 urlObject.hash('ahash');

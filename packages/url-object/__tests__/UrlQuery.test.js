@@ -1,4 +1,4 @@
-const UrlQuery = require('../lib/UrlQuery');
+const {UrlQuery} = require('../lib/index');
 
 describe('UrlQuery', () => {
     function createTestUrlQuery() {

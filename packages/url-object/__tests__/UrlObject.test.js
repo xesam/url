@@ -1,4 +1,4 @@
-const UrlObject = require('../lib/UrlObject');
+const {UrlObject} = require('../lib/index');
 
 describe('UrlObject', () => {
     function createTestUrlObject(href) {

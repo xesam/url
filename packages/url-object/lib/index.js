@@ -1,5 +1,5 @@
 const UrlQuery = require('./UrlQuery');
-const Index = require('./UrlObject');
+const UrlObject = require('./UrlObject');
 
-module.UrlQuery = UrlQuery;
-module.UrlObject = Index;
+exports.UrlQuery = UrlQuery;
+exports.UrlObject = UrlObject;
