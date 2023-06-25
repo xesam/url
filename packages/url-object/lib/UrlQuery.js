@@ -43,20 +43,13 @@ class UrlQuery {
         return this;
     }
 
-    clear(key, value) {
-        if (this.has(key)) {
-            if (arguments.length > 1) {
-                const values = this.get(key);
-                this.set(key, values.filter(ele => ele !== value));
-            } else {
-                this._components[key] = [];
-            }
-        }
+    remove(key) {
+        delete this._components[key];
         return this;
     }
 
-    remove(key) {
-        delete this._components[key];
+    clear() {
+        this._components = Object.create(null);
         return this;
     }
 

@@ -1,4 +1,4 @@
-const {UrlQuery} = require('../lib/index');
+const { UrlQuery } = require('../lib/index');
 
 describe('UrlQuery', () => {
     function createTestUrlQuery() {
@@ -19,7 +19,7 @@ describe('UrlQuery', () => {
         expect(testUrlQuery.get("b")).toContain('500');
     });
 
-    test('when create with qstring and decode is true then add the keys with decoded value', () => {
+    test('when create with qstring and enable decode then add the keys with decoded value', () => {
         const testUrlQuery = new UrlQuery('a=500%25&b=400&b=500', true);
 
         expect(testUrlQuery.get("a")).toEqual('500%');
@@ -112,32 +112,26 @@ describe('UrlQuery', () => {
         expect(testUrlQuery.get("a")).toEqual([200, 300]);
     });
 
-    test('when clear a key then delete all values of the key but keep the key', () => {
-        const testUrlQuery = createTestUrlQuery();
-        testUrlQuery.set("a", 200);
-
-        testUrlQuery.clear("a");
-
-        expect(testUrlQuery.has("a")).toBe(true);
-        expect(testUrlQuery.get("a")).toBeUndefined();
-    });
-
-    test('when clear a exist key with target value then delete all matched-values from the key but keep the key', () => {
-        const testUrlQuery = createTestUrlQuery();
-        testUrlQuery.set("a", [200, 300, 400]);
-
-        testUrlQuery.clear("a", 200);
-
-        expect(testUrlQuery.get("a")).toEqual([300, 400]);
-    });
-
     test('when remove a key then delete the key from UrlQuery', () => {
         const testUrlQuery = createTestUrlQuery();
-        testUrlQuery.set("a", [200, 300, 400]);
+        testUrlQuery.set("a", 200);
+        testUrlQuery.set("b", 300);
 
         testUrlQuery.remove("a");
 
         expect(testUrlQuery.has("a")).toBe(false);
+        expect(testUrlQuery.has("b")).toBe(true);
+    });
+
+    test('when clear then delete all keys', () => {
+        const testUrlQuery = createTestUrlQuery();
+        testUrlQuery.set("a", 200);
+        testUrlQuery.set("b", 300);
+
+        testUrlQuery.clear();
+
+        expect(testUrlQuery.has("a")).toBe(false);
+        expect(testUrlQuery.has("b")).toBe(false);
     });
 
     test('when merge with qstring then replace the matched keys', () => {
