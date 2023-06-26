@@ -15,17 +15,17 @@ describe('UrlQuery', () => {
     test('when create with qstring then add the keys with origin value', () => {
         const testUrlQuery = new UrlQuery('a=500%25&b=400&b=500');
 
-        expect(testUrlQuery.get("a")).toEqual('500%25');
-        expect(testUrlQuery.get("b")).toContain('400');
-        expect(testUrlQuery.get("b")).toContain('500');
+        expect(testUrlQuery.getValue("a")).toEqual('500%25');
+        expect(testUrlQuery.getAllValues("b")).toContain('400');
+        expect(testUrlQuery.getAllValues("b")).toContain('500');
     });
 
     test('when create with qstring and enable decode then add the keys with decoded value', () => {
         const testUrlQuery = new UrlQuery('a=500%25&b=400&b=500', true);
 
-        expect(testUrlQuery.get("a")).toEqual('500%');
-        expect(testUrlQuery.get("b")).toContain('400');
-        expect(testUrlQuery.get("b")).toContain('500');
+        expect(testUrlQuery.getValue("a")).toEqual('500%');
+        expect(testUrlQuery.getAllValues("b")).toContain('400');
+        expect(testUrlQuery.getAllValues("b")).toContain('500');
     });
 
     test('when the key exit then true is returned', () => {
@@ -47,7 +47,7 @@ describe('UrlQuery', () => {
 
         testUrlQuery.set("exist", 200);
 
-        expect(testUrlQuery.get("exist")).toBe(200);
+        expect(testUrlQuery.getValue("exist")).toBe(200);
     });
 
     test('when get by a non-exist key then return the undefined', () => {
@@ -55,7 +55,7 @@ describe('UrlQuery', () => {
 
         testUrlQuery.set("exist", 200);
 
-        expect(testUrlQuery.get("non-exist")).toBeUndefined();
+        expect(testUrlQuery.getValue("non-exist")).toBeUndefined();
     });
 
     test('when set falsy to a key then empty string is used', () => {
@@ -63,7 +63,7 @@ describe('UrlQuery', () => {
 
         testUrlQuery.set("a", null);
 
-        expect(testUrlQuery.get("a")).toBe('');
+        expect(testUrlQuery.getValue("a")).toBe('');
         expect(testUrlQuery.toUrlString()).toBe('a=');
     });
 
@@ -73,7 +73,7 @@ describe('UrlQuery', () => {
         testUrlQuery.set("a", 200);
         testUrlQuery.set("a", 300);
 
-        expect(testUrlQuery.get("a")).toBe(300);
+        expect(testUrlQuery.getValue("a")).toBe(300);
     });
 
     test('when set multi values to a key then replace the origin value of the key', () => {
@@ -82,7 +82,7 @@ describe('UrlQuery', () => {
         testUrlQuery.set("a", 200);
         testUrlQuery.set("a", 200, 300);
 
-        expect(testUrlQuery.get("a")).toEqual([200, 300]);
+        expect(testUrlQuery.getAllValues("a")).toEqual([200, 300]);
     });
 
     test('when add a value to a exist key then add the new value to the key', () => {
@@ -91,7 +91,7 @@ describe('UrlQuery', () => {
 
         testUrlQuery.add("a", 300);
 
-        expect(testUrlQuery.get("a")).toEqual([200, 300]);
+        expect(testUrlQuery.getAllValues("a")).toEqual([200, 300]);
     });
 
     test('when add value to a none-exist key then create the key and add the new value to the key', () => {
@@ -100,7 +100,7 @@ describe('UrlQuery', () => {
         testUrlQuery.add("a", 200);
         testUrlQuery.add("a", 300);
 
-        expect(testUrlQuery.get("a")).toEqual([200, 300]);
+        expect(testUrlQuery.getAllValues("a")).toEqual([200, 300]);
     });
 
     test('when add same value to the key then the last value is ignored', () => {
@@ -110,7 +110,7 @@ describe('UrlQuery', () => {
         testUrlQuery.add("a", 300);
         testUrlQuery.add("a", 300);
 
-        expect(testUrlQuery.get("a")).toEqual([200, 300]);
+        expect(testUrlQuery.getAllValues("a")).toEqual([200, 300]);
     });
 
     test('when remove a key then delete the key from UrlQuery', () => {
@@ -141,8 +141,8 @@ describe('UrlQuery', () => {
 
         testUrlQuery.merge('a=500%25&b=400');
 
-        expect(testUrlQuery.get("a")).toEqual('500%25');
-        expect(testUrlQuery.get("b")).toEqual('400');
+        expect(testUrlQuery.getValue("a")).toEqual('500%25');
+        expect(testUrlQuery.getValue("b")).toEqual('400');
     });
 
     test('when merge with qstring and decode is true then replace the matched keys with decoded value', () => {
@@ -151,8 +151,8 @@ describe('UrlQuery', () => {
 
         testUrlQuery.merge('a=500%25&b=400', true);
 
-        expect(testUrlQuery.get("a")).toEqual('500%');
-        expect(testUrlQuery.get("b")).toEqual('400');
+        expect(testUrlQuery.getValue("a")).toEqual('500%');
+        expect(testUrlQuery.getValue("b")).toEqual('400');
     });
 
     test('when merge with another UrlQuery then replace the matched keys', () => {
@@ -165,9 +165,9 @@ describe('UrlQuery', () => {
 
         testUrlQuery.merge(anotherUrlQuery);
 
-        expect(testUrlQuery.get("a")).toEqual(100);
-        expect(testUrlQuery.get("b")).toEqual(200);
-        expect(testUrlQuery.get("c")).toEqual(500);
+        expect(testUrlQuery.getValue("a")).toEqual(100);
+        expect(testUrlQuery.getValue("b")).toEqual(200);
+        expect(testUrlQuery.getValue("c")).toEqual(500);
     });
 
     test('when toUrlString() then serialize the query object', () => {

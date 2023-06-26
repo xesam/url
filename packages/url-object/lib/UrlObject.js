@@ -181,11 +181,11 @@ class UrlObject {
             return this;
         }
         value = String(value).trim();
-        if (value === '?') {
+        if (value.length === 0 || value === '?') {
             this.query.clear();
             return this;
         }
-        this.query = new UrlQuery(value.substring(1));
+        this.query.load(value.substring(1));
         return this;
     }
 

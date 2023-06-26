@@ -1,8 +1,8 @@
 class UrlQuery {
     constructor(qstring, decodeValue = false) {
         this._components = Object.create(null);
-        if (arguments.length) {
-            this.merge(qstring, decodeValue);
+        if (qstring) {
+            this.load(qstring, decodeValue);
         }
     }
 
@@ -14,15 +14,22 @@ class UrlQuery {
         return key in this._components;
     }
 
-    get(key) {
+    getKeys() {
+        return Object.keys(this._components);
+    }
+
+    getValue(key, index = 0) {
         if (!this.has(key)) {
             return;
         }
-        if (this._components[key].length > 1) {
-            return this._components[key];
-        } else {
-            return this._components[key][0];
+        return this._components[key][index];
+    }
+
+    getAllValues(key) {
+        if (!this.has(key)) {
+            return;
         }
+        return this._components[key];
     }
 
     add(key, value) {
@@ -58,18 +65,17 @@ class UrlQuery {
     }
 
     load(newQuery, decodeValue = false) {
-        const empty = new UrlQuery();
+        this.clear();
         return newQuery.split('&')
             .map(ele => ele.split('='))
-            .reduce((curr, [key, value]) => {
-                curr.add(key, decodeValue ? decodeURIComponent(value) : value);
-                return curr;
-            }, empty);
+            .forEach(([key, value]) => {
+                this.add(key, decodeValue ? decodeURIComponent(value) : value);
+            });
     }
 
     merge(otherQuery, decodeValue = false) {
         if (typeof otherQuery === 'string') {
-            const newUrlQuery = this.load(otherQuery, decodeValue);
+            const newUrlQuery = new UrlQuery(otherQuery, decodeValue);
             this.merge(newUrlQuery);
         } else if (otherQuery.constructor === UrlQuery) {
             Object.assign(this._components, otherQuery._components);

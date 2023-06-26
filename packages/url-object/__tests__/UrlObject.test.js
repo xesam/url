@@ -47,7 +47,7 @@ describe('UrlObject', () => {
         const testUrlObject = createTestUrlObject('the_protocol://the_username:the_password@the_hostname:8888/the_pathname?the_key=the_value#the_hash');
 
         expect(testUrlObject.query.has('the_key')).toBeTruthy();
-        expect(testUrlObject.query.get('the_key')).toBe('the_value');
+        expect(testUrlObject.query.getAllValues('the_key')).toContain('the_value');
         expect(testUrlObject.query.toUrlString()).toContain('the_key=the_value');
     });
 
@@ -293,20 +293,19 @@ describe('UrlObject', () => {
 
         testUrlObject.search('?');
         expect(testUrlObject.path()).toBe('/part1/part2');
-
-        testUrlObject.search('');
-        expect(testUrlObject.path()).toBe('/part1/part2');
     });
 
-    test('when set search with falsy then clear search but keep others', () => {
+    test('when set search with falsy or empty then clear search but keep others', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
         testUrlObject.search(null);
-
         expect(testUrlObject.path()).toBe('/part1/part2');
         expect(testUrlObject.pathname()).toBe('/part1/part2');
         expect(testUrlObject.search()).toBeUndefined();
+
+        testUrlObject.search('    ');
+        expect(testUrlObject.path()).toBe('/part1/part2');
     });
 
     test('when set query then update query and search', () => {
