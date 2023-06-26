@@ -6,6 +6,10 @@ class UrlQuery {
         }
     }
 
+    isEmpty() {
+        return Object.keys(this._components).length === 0;
+    }
+
     has(key) {
         return key in this._components;
     }
@@ -53,7 +57,7 @@ class UrlQuery {
         return this;
     }
 
-    _loadFromQueryString(newQuery, decodeValue = false) {
+    load(newQuery, decodeValue = false) {
         const empty = new UrlQuery();
         return newQuery.split('&')
             .map(ele => ele.split('='))
@@ -65,7 +69,7 @@ class UrlQuery {
 
     merge(otherQuery, decodeValue = false) {
         if (typeof otherQuery === 'string') {
-            const newUrlQuery = this._loadFromQueryString(otherQuery, decodeValue);
+            const newUrlQuery = this.load(otherQuery, decodeValue);
             this.merge(newUrlQuery);
         } else if (otherQuery.constructor === UrlQuery) {
             Object.assign(this._components, otherQuery._components);
@@ -73,12 +77,16 @@ class UrlQuery {
         return this;
     }
 
-    toString(decodeValue = false) {
+    toUrlString(decodeValue = false) {
         return Object.entries(this._components)
             .map(([key, values]) => {
                 return values.map(value => `${key}=${decodeValue ? encodeURIComponent(value) : value}`).join('&')
             })
             .join('&')
+    }
+
+    toString() {
+        return this.toUrlString();
     }
 }
 

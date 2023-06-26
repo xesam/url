@@ -4,7 +4,7 @@ const UrlQuery = require('./UrlQuery');
 class UrlObject {
     constructor(href) {
         this._components = {};
-        this.query = null;
+        this.query = new UrlQuery();;
         if (typeof href === 'string') {
             const url_components = url(href);
             this.protocol(url_components.protocol);
@@ -16,18 +16,36 @@ class UrlObject {
         }
     }
 
-    protocol(value) {
-        if (!arguments.length) {
-            return this._components['protocol'];
+    _attr_(key, fn) {
+        if (arguments.length <= 2) {
+            return this._components[key];
         }
+        let value = arguments[2];
         if (!value) {
-            delete this._components['protocol'];
+            delete this._components[key];
             return this;
         }
         value = String(value).trim();
-        value = value.replaceAll(/:|\//g, '')
-        this._components['protocol'] = value + ':';
+        if (fn) {
+            value = fn(value);
+        }
+        if (!value) {
+            delete this._components[key];
+        } else {
+            this._components[key] = value;
+        }
         return this;
+    }
+
+    protocol() {
+        return this._attr_.call(this, 'protocol', function (value) {
+            value = value.replaceAll(/:|\//g, '');
+            if (value.length) {
+                return value + ':';
+            } else {
+                return null;
+            }
+        }, ...arguments);
     }
 
     auth(value) {
@@ -58,30 +76,12 @@ class UrlObject {
         return this;
     }
 
-    username(value) {
-        if (!arguments.length) {
-            return this._components['username'];
-        }
-        if (!value) {
-            delete this._components['username'];
-            return this;
-        }
-        value = String(value).trim();
-        this._components['username'] = value;
-        return this;
+    username() {
+        return this._attr_.call(this, 'username', null, ...arguments);
     }
 
-    password(value) {
-        if (!arguments.length) {
-            return this._components['password'];
-        }
-        if (!value) {
-            delete this._components['password'];
-            return this;
-        }
-        value = String(value).trim();
-        this._components['password'] = value;
-        return this;
+    password() {
+        return this._attr_.call(this, 'password', null, ...arguments);
     }
 
     host(value) {
@@ -112,30 +112,12 @@ class UrlObject {
         return this;
     }
 
-    hostname(value) {
-        if (!arguments.length) {
-            return this._components['hostname'];
-        }
-        if (!value) {
-            delete this._components['hostname'];
-            return this;
-        }
-        value = String(value).trim();
-        this._components['hostname'] = value;
-        return this;
+    hostname() {
+        return this._attr_.call(this, 'hostname', null, ...arguments);
     }
 
-    port(value) {
-        if (!arguments.length) {
-            return this._components['port'];
-        }
-        if (!value) {
-            delete this._components['port'];
-            return this;
-        }
-        value = String(value).trim();
-        this._components['port'] = value;
-        return this;
+    port() {
+        return this._attr_.call(this, 'port', null, ...arguments);
     }
 
     path(value) {
@@ -177,67 +159,75 @@ class UrlObject {
         }
     }
 
-    pathname(value) {
-        if (!arguments.length) {
-            return this._components['pathname'];
-        }
-        if (!value) {
-            delete this._components['pathname'];
-            return this;
-        }
-        value = String(value).trim();
-        if (!value.startsWith('/')) {
-            value = '/' + value;
-        }
-        this._components['pathname'] = value;
-        return this;
+    pathname() {
+        return this._attr_.call(this, 'pathname', function (value) {
+            if (!value.startsWith('/')) {
+                value = '/' + value;
+            }
+            return value;
+        }, ...arguments);
     }
 
     search(value) {
         if (!arguments.length) {
-            if (!this.query) {
-                return;
-            } else if (!this.query.toString().length) {
+            if (!this.query || this.query.isEmpty()) {
                 return;
             } else {
-                return '?' + this.query.toString();
+                return '?' + this.query.toUrlString();
             }
         }
         if (!value) {
-            this.query = null;
+            this.query.clear();
             return this;
         }
         value = String(value).trim();
         if (value === '?') {
-            this.query = null;
+            this.query.clear();
             return this;
         }
         this.query = new UrlQuery(value.substring(1));
         return this;
     }
 
-    hash(value) {
-        if (!arguments.length) {
-            return this._components['hash'];
+    hash() {
+        return this._attr_.call(this, 'hash', function (value) {
+            if (!value.startsWith('#')) {
+                value = '#' + value;
+            }
+            if (value === '#') {
+                return null;
+            } else {
+                return value;
+            }
+        }, ...arguments);
+    }
+
+    toUrlString() {
+        const segments = [];
+        if (this.hash()) {
+            segments.unshift(this.hash());
         }
-        if (!value) {
-            delete this._components['hash'];
-            return this;
+        if (this.path()) {
+            segments.unshift(this.path());
         }
-        value = String(value).trim();
-        if (!value.startsWith('#')) {
-            value = '#' + value;
+        if (this.host()) {
+            segments.unshift(this.host());
         }
-        if (value === '#') {
-            delete this._components['hash'];
-            return this;
+        if (this.auth()) {
+            segments.unshift('@');
+            segments.unshift(this.auth());
         }
-        this._components['hash'] = value;
-        return this;
+        if (this.host() || this.auth()) {
+            segments.unshift('//');
+        }
+        if (this.protocol()) {
+            segments.unshift(this.protocol());
+        }
+        return segments.join('');
     }
 
     toString() {
-        return `${this.protocol()}//${this.host()}${this.path()}${this.hash()}`;
+        return this.toUrlString();
     }
 }
 

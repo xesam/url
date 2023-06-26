@@ -1,4 +1,4 @@
-const {UrlObject} = require('../lib/index');
+const { UrlObject } = require('../lib/index');
 
 describe('UrlObject', () => {
     function createTestUrlObject(href) {
@@ -21,10 +21,10 @@ describe('UrlObject', () => {
         expect(testUrlObject.hash()).toBeUndefined();
     });
 
-    test('when create a new UrlObject with nothing then the query is null', () => {
+    test('when create a new UrlObject with nothing then the query is empty', () => {
         const testUrlObject = createTestUrlObject();
 
-        expect(testUrlObject.query).toBeNull();
+        expect(testUrlObject.query.isEmpty()).toBe(true);
     });
 
     test('when create a new UrlObject with url-string then all attributes are init', () => {
@@ -48,7 +48,7 @@ describe('UrlObject', () => {
 
         expect(testUrlObject.query.has('the_key')).toBeTruthy();
         expect(testUrlObject.query.get('the_key')).toBe('the_value');
-        expect(testUrlObject.query.toString()).toContain('the_key=the_value');
+        expect(testUrlObject.query.toUrlString()).toContain('the_key=the_value');
     });
 
     test('when set protocol then update protocol only', () => {
@@ -61,12 +61,14 @@ describe('UrlObject', () => {
         expect(testUrlObject.protocol()).toBe('https:');
     });
 
-    test('when set protocol with falsy then clear the protocol', () => {
+    test('when set protocol with falsy or empty then clear the protocol', () => {
         const testUrlObject = createTestUrlObject();
-
         testUrlObject.protocol('http');
-        testUrlObject.protocol(null);
 
+        testUrlObject.protocol(null);
+        expect(testUrlObject.protocol()).toBeUndefined();
+
+        testUrlObject.protocol("            ");
         expect(testUrlObject.protocol()).toBeUndefined();
     });
 
@@ -80,11 +82,15 @@ describe('UrlObject', () => {
         expect(testUrlObject.password()).toBe('password');
     });
 
-    test('when set auth with falsy then clear username and password', () => {
+    test('when set auth with falsy or empty then clear username and password', () => {
         const testUrlObject = createTestUrlObject();
 
         testUrlObject.auth(null);
+        expect(testUrlObject.auth()).toBeUndefined();
+        expect(testUrlObject.username()).toBeUndefined();
+        expect(testUrlObject.password()).toBeUndefined();
 
+        testUrlObject.auth("           ");
         expect(testUrlObject.auth()).toBeUndefined();
         expect(testUrlObject.username()).toBeUndefined();
         expect(testUrlObject.password()).toBeUndefined();
@@ -328,21 +334,47 @@ describe('UrlObject', () => {
     test('when set hash then update hash only', () => {
         const testUrlObject = createTestUrlObject();
 
+        testUrlObject.hash(' # ');
+        expect(testUrlObject.hash()).toBeUndefined();
+
         testUrlObject.hash(' hash ');
         expect(testUrlObject.hash()).toBe('#hash');
+
         testUrlObject.hash('#hash');
         expect(testUrlObject.hash()).toBe('#hash');
+
         testUrlObject.hash('##hash');
         expect(testUrlObject.hash()).toBe('##hash');
     });
 
-    test('when set hash with falsy then clear hash', () => {
+    test('when set hash with falsy or empty then clear hash', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.hash('hash');
 
         testUrlObject.hash(null);
-
         expect(testUrlObject.hash()).toBeUndefined();
+
+        testUrlObject.hash("       ");
+        expect(testUrlObject.hash()).toBeUndefined();
+    });
+
+    test('when toUrlString then serialize with components', () => {
+        const testUrlObject = createTestUrlObject();
+
+        testUrlObject.hash('the_hash');
+        expect(testUrlObject.toUrlString()).toBe('#the_hash');
+
+        testUrlObject.path('/the_pathname?key=value');
+        expect(testUrlObject.toUrlString()).toBe('/the_pathname?key=value#the_hash');
+
+        testUrlObject.host('the_host');
+        expect(testUrlObject.toUrlString()).toBe('//the_host/the_pathname?key=value#the_hash');
+
+        testUrlObject.auth('the_username:the_password');
+        expect(testUrlObject.toUrlString()).toBe('//the_username:the_password@the_host/the_pathname?key=value#the_hash');
+
+        testUrlObject.protocol('the_protocol');
+        expect(testUrlObject.toUrlString()).toBe('the_protocol://the_username:the_password@the_host/the_pathname?key=value#the_hash');
     });
 
 });

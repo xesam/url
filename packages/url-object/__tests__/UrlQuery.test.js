@@ -8,7 +8,8 @@ describe('UrlQuery', () => {
     test('when create a new UrlQuery with nothing then all are empty', () => {
         const testUrlQuery = createTestUrlQuery();
 
-        expect(testUrlQuery.toString()).toBe('');
+        expect(testUrlQuery.isEmpty()).toBe(true);
+        expect(testUrlQuery.toUrlString()).toBe('');
     });
 
     test('when create with qstring then add the keys with origin value', () => {
@@ -63,7 +64,7 @@ describe('UrlQuery', () => {
         testUrlQuery.set("a", null);
 
         expect(testUrlQuery.get("a")).toBe('');
-        expect(testUrlQuery.toString()).toBe('a=');
+        expect(testUrlQuery.toUrlString()).toBe('a=');
     });
 
     test('when set a single value to a key then replace the origin value of the key', () => {
@@ -169,14 +170,14 @@ describe('UrlQuery', () => {
         expect(testUrlQuery.get("c")).toEqual(500);
     });
 
-    test('when toString() then serialize the query object', () => {
+    test('when toUrlString() then serialize the query object', () => {
         const testUrlQuery = createTestUrlQuery();
         testUrlQuery.add("a", '200%25');
         testUrlQuery.add("a", '300');
         testUrlQuery.add("a", '400');
         testUrlQuery.add("b", '400%25');
 
-        const qstring = testUrlQuery.toString();
+        const qstring = testUrlQuery.toUrlString();
 
         expect(qstring).toContain('a=200%25');
         expect(qstring).toContain('a=300');
@@ -184,14 +185,14 @@ describe('UrlQuery', () => {
         expect(qstring).toContain('b=400%25');
     });
 
-    test('when toString(true) then serialize the query object and encode values', () => {
+    test('when toUrlString(true) then serialize the query object and encode values', () => {
         const testUrlQuery = createTestUrlQuery();
         testUrlQuery.add("a", '200%25');
         testUrlQuery.add("a", '300');
         testUrlQuery.add("a", '400');
         testUrlQuery.add("b", '400%25');
 
-        const qstring = testUrlQuery.toString(true);
+        const qstring = testUrlQuery.toUrlString(true);
 
         expect(qstring).toContain('a=200%');
         expect(qstring).toContain('a=300');
