@@ -1,11 +1,11 @@
 {
   "name": "@xesam/url-object",
   "version": "0.1.2",
-  "description": "A simple URL modifier",
+  "description": "A simple URL-style string Builder",
   "keywords": [
     "url",
     "parse url",
-    "modify url"
+    "build url"
   ],
   "author": "xesam <xesam@outlook.com>",
   "homepage": "https://github.com/xesam/url#readme",
