@@ -141,12 +141,7 @@ class UrlObject {
             this.search(null);
             return this;
         }
-        value = String(value);
-        const hashStart = value.indexOf('#');
-        if (hashStart !== -1) {
-            value = value.substring(0, hashStart);
-        }
-
+        value = String(value).trim();
         const searchStart = value.indexOf('?');
         if (searchStart !== -1) {
             const pathname = value.substring(0, searchStart);
@@ -168,6 +163,23 @@ class UrlObject {
         }, ...arguments);
     }
 
+    pathnameFragments(...fragments) {
+        if (arguments.length === 0) {
+            const pathname = this.pathname();
+            if (!pathname) {
+                return [];
+            }
+            const fragments = pathname.split('/');
+            fragments.shift();
+            return fragments;
+        } else {
+            fragments = fragments.filter(ele => {
+                return ele && ele.trim().length !== 0;
+            })
+            return this.pathname(fragments.join('/'));
+        }
+    }
+
     search(value) {
         if (!arguments.length) {
             if (!this.query || this.query.isEmpty()) {
@@ -180,12 +192,12 @@ class UrlObject {
             this.query.clear();
             return this;
         }
-        value = String(value).trim();
-        if (value.length === 0 || value === '?') {
+        value = String(value).trim().replaceAll('?', '');
+        if (value.length === 0) {
             this.query.clear();
             return this;
         }
-        this.query.load(value.substring(1));
+        this.query.load(value);
         return this;
     }
 

@@ -5,7 +5,7 @@ describe('UrlObject', () => {
         return new UrlObject(href);
     }
 
-    test('when create a new UrlObject with nothing then all attributes are undefined', () => {
+    test('when create a new UrlObject with nothing then all attributes are reset', () => {
         const testUrlObject = createTestUrlObject();
 
         expect(testUrlObject.protocol()).toBeUndefined();
@@ -17,6 +17,7 @@ describe('UrlObject', () => {
         expect(testUrlObject.port()).toBeUndefined();
         expect(testUrlObject.path()).toBeUndefined();
         expect(testUrlObject.pathname()).toBeUndefined();
+        expect(testUrlObject.pathnameFragments()).toStrictEqual([]);
         expect(testUrlObject.search()).toBeUndefined();
         expect(testUrlObject.hash()).toBeUndefined();
     });
@@ -39,6 +40,7 @@ describe('UrlObject', () => {
         expect(testUrlObject.port()).toBe('8888');
         expect(testUrlObject.path()).toBe('/the_pathname?the_key=the_value');
         expect(testUrlObject.pathname()).toBe('/the_pathname');
+        expect(testUrlObject.pathnameFragments()).toStrictEqual(['the_pathname']);
         expect(testUrlObject.search()).toBe('?the_key=the_value');
         expect(testUrlObject.hash()).toBe('#the_hash');
     });
@@ -55,9 +57,9 @@ describe('UrlObject', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.protocol(' https: ');
         expect(testUrlObject.protocol()).toBe('https:');
-        testUrlObject.protocol('https');
+        testUrlObject.protocol(' https ');
         expect(testUrlObject.protocol()).toBe('https:');
-        testUrlObject.protocol('https://');
+        testUrlObject.protocol(' https:// ');
         expect(testUrlObject.protocol()).toBe('https:');
     });
 
@@ -69,6 +71,9 @@ describe('UrlObject', () => {
         expect(testUrlObject.protocol()).toBeUndefined();
 
         testUrlObject.protocol("            ");
+        expect(testUrlObject.protocol()).toBeUndefined();
+
+        testUrlObject.protocol("      :      ");
         expect(testUrlObject.protocol()).toBeUndefined();
     });
 
@@ -117,11 +122,18 @@ describe('UrlObject', () => {
         expect(testUrlObject.password()).toBe('password');
     });
 
-    test('when set username with falsy then clear username but keep password', () => {
+    test('when set username with falsy or empty then clear username but keep password', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.auth(' username :  password ');
 
+        testUrlObject.auth(' username :  password ');
         testUrlObject.username(null);
+
+        expect(testUrlObject.auth()).toBe(':password');
+        expect(testUrlObject.username()).toBeUndefined();
+        expect(testUrlObject.password()).toBe('password');
+
+        testUrlObject.auth(' username :  password ');
+        testUrlObject.username('          ');
 
         expect(testUrlObject.auth()).toBe(':password');
         expect(testUrlObject.username()).toBeUndefined();
@@ -139,11 +151,18 @@ describe('UrlObject', () => {
         expect(testUrlObject.password()).toBe('new_password');
     });
 
-    test('when set password with falsy then clear password but keep username', () => {
+    test('when set password with falsy or empty then clear password but keep username', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.auth(' username :  password ');
 
+        testUrlObject.auth(' username :  password ');
         testUrlObject.password(null);
+
+        expect(testUrlObject.auth()).toBe('username');
+        expect(testUrlObject.username()).toBe('username');
+        expect(testUrlObject.password()).toBeUndefined();
+
+        testUrlObject.auth(' username :  password ');
+        testUrlObject.password('            ');
 
         expect(testUrlObject.auth()).toBe('username');
         expect(testUrlObject.username()).toBe('username');
@@ -170,11 +189,18 @@ describe('UrlObject', () => {
         expect(testUrlObject.port()).toBeUndefined();
     });
 
-    test('when set host with falsy then clear hostname and port', () => {
+    test('when set host with falsy or empty then clear hostname and port', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.host(' hostname :  80 ');
 
+        testUrlObject.host('hostname:80');
         testUrlObject.host(null);
+
+        expect(testUrlObject.host()).toBeUndefined();
+        expect(testUrlObject.hostname()).toBeUndefined();
+        expect(testUrlObject.port()).toBeUndefined();
+
+        testUrlObject.host('hostname:80');
+        testUrlObject.host('           ');
 
         expect(testUrlObject.host()).toBeUndefined();
         expect(testUrlObject.hostname()).toBeUndefined();
@@ -183,8 +209,8 @@ describe('UrlObject', () => {
 
     test('when set hostname then update hostname and keep port', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.host(' hostname :  80 ');
 
+        testUrlObject.host('hostname:80');
         testUrlObject.hostname(' new_hostname ');
 
         expect(testUrlObject.host()).toBe('new_hostname:80');
@@ -192,11 +218,18 @@ describe('UrlObject', () => {
         expect(testUrlObject.port()).toBe('80');
     });
 
-    test('when set hostname with falsy then clear hostname and keep port', () => {
+    test('when set hostname with falsy or empty then clear hostname and keep port', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.host(' hostname :  80 ');
 
+        testUrlObject.host('hostname:80');
         testUrlObject.hostname(null);
+
+        expect(testUrlObject.host()).toBe(':80');
+        expect(testUrlObject.hostname()).toBeUndefined();
+        expect(testUrlObject.port()).toBe('80');
+
+        testUrlObject.host('hostname:80');
+        testUrlObject.hostname('          ');
 
         expect(testUrlObject.host()).toBe(':80');
         expect(testUrlObject.hostname()).toBeUndefined();
@@ -205,7 +238,7 @@ describe('UrlObject', () => {
 
     test('when set port then update port and keep hostname', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.host(' hostname :  80 ');
+        testUrlObject.host('hostname:80');
 
         testUrlObject.port(' 8000 ');
 
@@ -214,11 +247,18 @@ describe('UrlObject', () => {
         expect(testUrlObject.port()).toBe('8000');
     });
 
-    test('when set port with falsy then clear hostname and keep port', () => {
+    test('when set port with falsy or empty then clear hostname and keep port', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.host(' hostname :  80 ');
 
+        testUrlObject.host('hostname:80');
         testUrlObject.port(null);
+
+        expect(testUrlObject.host()).toBe('hostname');
+        expect(testUrlObject.hostname()).toBe('hostname');
+        expect(testUrlObject.port()).toBeUndefined();
+
+        testUrlObject.host('hostname:80');
+        testUrlObject.port('           ');
 
         expect(testUrlObject.host()).toBe('hostname');
         expect(testUrlObject.hostname()).toBe('hostname');
@@ -227,37 +267,52 @@ describe('UrlObject', () => {
 
     test('when set path then update pathname and search', () => {
         const testUrlObject = createTestUrlObject();
+
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
         expect(testUrlObject.path()).toBe('/part1/part2?k1=v1&k2=v2');
-
-        testUrlObject.path('/part1/part2?k1=v1&k2=v2#hash1');
-        expect(testUrlObject.path()).toBe('/part1/part2?k1=v1&k2=v2');
-
-        testUrlObject.path('part1/part2?k1=v1&k2=v2');
-        expect(testUrlObject.path()).toBe('/part1/part2?k1=v1&k2=v2');
+        expect(testUrlObject.pathname()).toBe('/part1/part2');
+        expect(testUrlObject.search()).toBe('?k1=v1&k2=v2');
 
         testUrlObject.path('/part1/part2');
         expect(testUrlObject.path()).toBe('/part1/part2');
+        expect(testUrlObject.pathname()).toBe('/part1/part2');
+        expect(testUrlObject.search()).toBeUndefined();
 
-        testUrlObject.path('?k1=v1&k2=v2#hash1');
+        testUrlObject.path('/');
+        expect(testUrlObject.path()).toBe('/');
+        expect(testUrlObject.pathname()).toBe('/');
+        expect(testUrlObject.search()).toBeUndefined();
+
+        testUrlObject.path('?k1=v1&k2=v2');
         expect(testUrlObject.path()).toBe('?k1=v1&k2=v2');
+        expect(testUrlObject.pathname()).toBeUndefined();
+        expect(testUrlObject.search()).toBe('?k1=v1&k2=v2');
 
-        testUrlObject.path('#hash1');
+        testUrlObject.path('?');
         expect(testUrlObject.path()).toBeUndefined();
+        expect(testUrlObject.pathname()).toBeUndefined();
+        expect(testUrlObject.search()).toBeUndefined();
     });
 
-    test('when set path with falsy then clear pathname and search', () => {
+    test('when set path with falsy or empty then clear pathname and search', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
         testUrlObject.path(null);
+
+        expect(testUrlObject.path()).toBeUndefined();
+        expect(testUrlObject.pathname()).toBeUndefined();
+        expect(testUrlObject.search()).toBeUndefined();
+
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+        testUrlObject.path('           ');
 
         expect(testUrlObject.path()).toBeUndefined();
         expect(testUrlObject.pathname()).toBeUndefined();
         expect(testUrlObject.search()).toBeUndefined();
     });
 
-    test('when set pathname then update path and keep search', () => {
+    test('when set pathname then update pathname and keep search', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
@@ -269,65 +324,88 @@ describe('UrlObject', () => {
 
         testUrlObject.pathname('/');
         expect(testUrlObject.path()).toBe('/?k1=v1&k2=v2');
-
-        testUrlObject.pathname('');
-        expect(testUrlObject.path()).toBe('?k1=v1&k2=v2');
     });
 
-    test('when set pathname with falsy then clear path but keep search', () => {
+    test('when set pathname with falsy then clear pathname but keep search', () => {
         const testUrlObject = createTestUrlObject();
+
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
-
         testUrlObject.pathname(null);
+        expect(testUrlObject.path()).toBe('?k1=v1&k2=v2');
+        expect(testUrlObject.pathname()).toBeUndefined();
 
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+        testUrlObject.pathname('');
         expect(testUrlObject.path()).toBe('?k1=v1&k2=v2');
         expect(testUrlObject.pathname()).toBeUndefined();
     });
 
-    test('when set search then update search and keep others', () => {
+    test('when set pathname fragmets then update pathname and keep search', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
+        testUrlObject.pathnameFragments('a', 'b', 'c');
+
+        expect(testUrlObject.path()).toBe('/a/b/c?k1=v1&k2=v2');
+        expect(testUrlObject.pathnameFragments()).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    test('when set pathname fragmets with empty value list then clear pathname but keep search', () => {
+        const testUrlObject = createTestUrlObject();
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+
+        testUrlObject.pathnameFragments('  ', null, false);
+
+        expect(testUrlObject.path()).toBe('?k1=v1&k2=v2');
+        expect(testUrlObject.pathnameFragments()).toStrictEqual([]);
+    });
+
+    test('when set search then update search and keep others', () => {
+        const testUrlObject = createTestUrlObject();
+
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
         testUrlObject.search('?k1=new_v1&new_k2=v2');
         expect(testUrlObject.path()).toBe('/part1/part2?k1=new_v1&new_k2=v2');
 
-        testUrlObject.search('?');
-        expect(testUrlObject.path()).toBe('/part1/part2');
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+        testUrlObject.search('k1=new_v1&new_k2=v2');
+        expect(testUrlObject.path()).toBe('/part1/part2?k1=new_v1&new_k2=v2');
     });
 
     test('when set search with falsy or empty then clear search but keep others', () => {
         const testUrlObject = createTestUrlObject();
-        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
         testUrlObject.search(null);
         expect(testUrlObject.path()).toBe('/part1/part2');
         expect(testUrlObject.pathname()).toBe('/part1/part2');
         expect(testUrlObject.search()).toBeUndefined();
 
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
         testUrlObject.search('    ');
         expect(testUrlObject.path()).toBe('/part1/part2');
+        expect(testUrlObject.pathname()).toBe('/part1/part2');
+        expect(testUrlObject.search()).toBeUndefined();
+
+        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
+        testUrlObject.search('?');
+        expect(testUrlObject.path()).toBe('/part1/part2');
+        expect(testUrlObject.pathname()).toBe('/part1/part2');
+        expect(testUrlObject.search()).toBeUndefined();
     });
 
-    test('when set query then update query and search', () => {
+    test('when modify query then update query and search', () => {
         const testUrlObject = createTestUrlObject();
         testUrlObject.path('/part1/part2?k1=v1&k2=v2');
 
         testUrlObject.query.set('k1', 'new_v1');
-        testUrlObject.query.set('new_k2', 'v2');
-
-        expect(testUrlObject.search()).toContain('k1=new_v1');
-        expect(testUrlObject.search()).toContain('k2=v2');
-        expect(testUrlObject.search()).toContain('new_k2=v2');
-    });
-
-    test('when remove query then update query and search', () => {
-        const testUrlObject = createTestUrlObject();
-        testUrlObject.path('/part1/part2?k1=v1&k2=v2');
-
+        testUrlObject.query.set('k3', 'v3');
         testUrlObject.query.remove('k1');
         testUrlObject.query.remove('k2');
 
-        expect(testUrlObject.path()).toBe('/part1/part2');
+        expect(testUrlObject.search()).not.toContain('k1=new_v1');
+        expect(testUrlObject.search()).not.toContain('k2=v2');
+        expect(testUrlObject.search()).toContain('k3=v3');
     });
 
     test('when set hash then update hash only', () => {
