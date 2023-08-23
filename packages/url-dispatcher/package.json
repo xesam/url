@@ -1,0 +1,35 @@
+{
+  "name": "@xesam/url-dispatcher",
+  "version": "0.1.2",
+  "description": "dispatch action with url config",
+  "keywords": [
+    "url",
+    "action",
+    "dispatch"
+  ],
+  "author": "xesam <xesam@outlook.com>",
+  "homepage": "https://github.com/xesam/url#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xesam/url.git"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "bugs": {
+    "url": "https://github.com/xesam/url/issues"
+  }
+}

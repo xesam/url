@@ -1,5 +1,7 @@
 # URL
 
+    lerna : 6.6.2
+
 使用纯 Javascript 来处理 URL 相关字符串。
 
 URL utils with pure Javascript.
@@ -21,4 +23,8 @@ A compat URL&URLSearchParams with pure Javascript.
 A simple URL-style String modifier.
 
 [@xesam/url-object](./packages/url-object/README.md) 
+
+## 使用 URL-Style 字符串动态配置和分发跳转动作（@xesam/url-dispatcher）
+
+[@xesam/url-dispatcher](./packages/url-dispatcher/README.md) 
 
